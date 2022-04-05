@@ -13,10 +13,15 @@ public class Player : MonoBehaviour
     private float moveSmoothness = .5f;
     [SerializeField] private Transform leftPoint;
     [SerializeField] private Transform rightPoint;
+    [SerializeField] private Transform Storage;
     private Animator animator;
 
     private Touch touch;
     private float deltaTouch;
+
+    [SerializeField] private float lerpTime;
+    public bool reversed = false;
+    public AnimationCurve rotationCurve;
 
     private void Start()
     {
@@ -30,11 +35,33 @@ public class Player : MonoBehaviour
 
     public void Reverse()
     {
-        animator.SetTrigger("Turn");
+        reversed = !reversed;
+
+        if (reversed)
+            LeanTween.rotateY(gameObject, transform.localRotation.eulerAngles.y + 180f, lerpTime).setEase(rotationCurve);
+        else
+            LeanTween.rotateY(gameObject, transform.localRotation.eulerAngles.y - 180f, lerpTime).setEase(rotationCurve);
+
+        Debug.Log("turned");
     }
 
-    public void Gather(string _goodiesType)
+    public void Gather(string _goodiesType, int _value, GameObject _object)
     {
+        switch (_goodiesType)
+        {
+            case "wood":
+                wood += _value;
+                break;
+            case "stone":
+                stone += _value;
+                break;
+            case "gold":
+                gold += _value;
+                break;
+        }
+
+        _object.transform.SetParent(Storage);
+        _object.transform.localPosition = Vector3.MoveTowards(_object.transform.localPosition, Vector3.zero, 10f * Time.deltaTime);
     }
 
     private void Movements()
