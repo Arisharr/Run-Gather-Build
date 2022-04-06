@@ -7,13 +7,14 @@ public class Player : MonoBehaviour
     public float wood;
     public float stone;
     public float gold;
+    public int storageCount;
 
     public float forwardSpeed;
     public float horizontalSpeed;
     private float moveSmoothness = .5f;
     [SerializeField] private Transform leftPoint;
     [SerializeField] private Transform rightPoint;
-    [SerializeField] private Transform Storage;
+    public Transform Storage;
     private Animator animator;
 
     private Touch touch;
@@ -45,23 +46,23 @@ public class Player : MonoBehaviour
         Debug.Log("turned");
     }
 
-    public void Gather(string _goodiesType, int _value, GameObject _object)
+    public void Gather(Goodie.Goodies _goodiesType, int _value, GameObject _object)
     {
+        storageCount++;
+
         switch (_goodiesType)
         {
-            case "wood":
+            case Goodie.Goodies.wood:
                 wood += _value;
                 break;
-            case "stone":
+            case Goodie.Goodies.stone:
                 stone += _value;
                 break;
-            case "gold":
+            case Goodie.Goodies.gold:
                 gold += _value;
                 break;
         }
 
-        _object.transform.SetParent(Storage);
-        _object.transform.localPosition = Vector3.MoveTowards(_object.transform.localPosition, Vector3.zero, 10f * Time.deltaTime);
     }
 
     private void Movements()
